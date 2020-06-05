@@ -79,6 +79,7 @@ class Mzid(object):
         :return:
         """
         self.psm_df = self._read_psm()
+        return None
 
     def read_peptide(self):
         """
@@ -86,6 +87,7 @@ class Mzid(object):
         :return:
         """
         self.peptide_df = self._read_peptide()
+        return None
 
     def read_protein(self):
         """
@@ -93,12 +95,14 @@ class Mzid(object):
         :return:
         """
         self.protein_df = self._read_protein()
+        return None
 
     def read_pe(self):
         """
         Read in peptide evidence table
         """
         self.pe_df = self._read_pe()
+        return None
 
     def read_dbs(self):
         """
@@ -106,7 +110,16 @@ class Mzid(object):
         :return:
         """
         self.dbs_df = self._read_dbs()
+        return None
 
+    def link_peptide_psm(self):
+        """
+        Link peptide to PSM
+        :return:
+        """
+        self.pep_summary_df = self._link_peptide_psm(self.peptide_df,
+                                                     self.psm_df,
+                                                     take_psm_df_cvParams=True)
 
     def _read_psm(self):
         """
@@ -439,7 +452,10 @@ class Mzid(object):
 
         return dbs_df
 
-    def merge_tables(self, take_psm_df_cvParams=True):
+    @staticmethod
+    def _link_peptide_psm(peptide_df,
+                          psm_df,
+                          take_psm_df_cvParams=True):
         """
         Take the five Mzid data frames, and return a flat table
 
@@ -467,14 +483,15 @@ class Mzid(object):
 
         # Here we assuming the identification scores are already sorted from top to bottom
         # #and take only one psm_id for each pep_id.
-        self.psm_df = self.psm_df.groupby('pep_id', sort=False).first().reset_index()
+        psm_df = psm_df.groupby('pep_id', sort=False).first().reset_index().copy()
 
         if take_psm_df_cvParams:
-            self.pep_summary_df = pd.merge(self.peptide_df, self.psm_df, how='left')
+            pep_summary_df = pd.merge(peptide_df, psm_df, how='left')
         else:
-            self.pep_summary_df = pd.merge(self.peptide_df, self.psm_df[self.psm_df.columns[0:8]], how='left')
+            pep_summary_df = pd.merge(peptide_df, psm_df[psm_df.columns[0:8]], how='left')
 
-        return True
+        return pep_summary_df
+
 
     def filter_peptide_summary(self, lysine_filter=0, protein_q=1e-2, peptide_q=1e-2, unique_only=False, require_protein_id=False):
         """

@@ -20,6 +20,9 @@ def main():
     Main entry point
     :return:
     """
+
+    # TODO: add logging
+
     # Parse all the arguments
     args = pymzid.parse_args.get_args()
 
@@ -29,7 +32,7 @@ def main():
 
     try:
         mzid = Mzid(mzid_loc)
-        mzid.merge_tables(take_psm_df_cvParams=True)
+        mzid.link_peptide_psm()
 
         #mzid.filter_peptide_summary(lysine_filter=0, protein_q=1, peptide_q=1, unique_only=False, require_protein_id=False)
         #mzid.filtered_pep_summary_df.to_csv(out_loc, sep='\t')
