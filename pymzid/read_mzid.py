@@ -31,7 +31,7 @@ class Mzid(object):
 
         """
         self.path = os.path.join(path)
-        self.root = self.parse_file()
+        self.root = self._parse_file()
 
         self.psm_df = pd.DataFrame() #self.read_psm()
         self.peptide_df = pd.DataFrame() #self.read_peptide()
@@ -46,7 +46,7 @@ class Mzid(object):
         #self.filtered_pep_summary_df = pd.DataFrame()
 
 
-    def parse_file(self):
+    def _parse_file(self):
         """
         Get the mzid file xml root
         NB: Move time tracker to main loop when made into object oriented.
@@ -54,7 +54,7 @@ class Mzid(object):
         :return: True
         """
 
-        print('Reading mzID file as document object model...')
+        print('Reading mzID file {0} as document object model...'.format(self.path))
         t1 = time()
         tree = ElementTree.parse(self.path)
         root = tree.getroot()
@@ -112,14 +112,17 @@ class Mzid(object):
         self.dbs_df = self._read_dbs()
         return None
 
-    def link_peptide_psm(self):
+    def link_peptide_psm(self, take_psm_cvparams=False):
         """
-        Link peptide to PSM
+        Links peptides to PSM table
+
+        :param take_psm_cvparams: set this to true if there are additional PSM level parameters to be printed
         :return:
         """
+
         self.pep_summary_df = self._link_peptide_psm(self.peptide_df,
                                                      self.psm_df,
-                                                     take_psm_df_cvParams=True)
+                                                     take_psm_cvparams=take_psm_cvparams)
 
     def _read_psm(self):
         """
@@ -163,8 +166,6 @@ class Mzid(object):
                 # Start an empty dictionary and add all SIR and SII level attributes
                 psm_dict = {}
 
-                print(spec_id_result.attrib)
-                print(spec_id_item.attrib)
                 psm_dict['sir_id'] = spec_id_result.attrib['id']
                 psm_dict['spectrum_id'] = spec_id_result.attrib['spectrumID']
 
@@ -455,7 +456,7 @@ class Mzid(object):
     @staticmethod
     def _link_peptide_psm(peptide_df,
                           psm_df,
-                          take_psm_df_cvParams=True):
+                          take_psm_cvparams=True):
         """
         Take the five Mzid data frames, and return a flat table
 
@@ -485,9 +486,10 @@ class Mzid(object):
         # #and take only one psm_id for each pep_id.
         psm_df = psm_df.groupby('pep_id', sort=False).first().reset_index().copy()
 
-        if take_psm_df_cvParams:
+        if take_psm_cvparams is True:
             pep_summary_df = pd.merge(peptide_df, psm_df, how='left')
-        else:
+
+        elif take_psm_cvparams is False:
             pep_summary_df = pd.merge(peptide_df, psm_df[psm_df.columns[0:8]], how='left')
 
         return pep_summary_df
