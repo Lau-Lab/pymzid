@@ -33,17 +33,18 @@ class Mzid(object):
         self.path = os.path.join(path)
         self.root = self.parse_file()
 
-        self.psm_df = self.read_psm()
-        self.peptide_df = self.read_peptide()
-        self.protein_df = self.read_protein()
-        self.pe_df = self.read_pe()
-        self.dbs_df = self.read_dbs()
+        self.psm_df = pd.DataFrame() #self.read_psm()
+        self.peptide_df = pd.DataFrame() #self.read_peptide()
+        self.protein_df = pd.DataFrame() #self.read_protein()
+        self.pe_df = pd.DataFrame() #self.read_pe()
+        self.dbs_df = pd.DataFrame() #self.read_dbs()
 
         self.pep_summary_df = pd.DataFrame()
-        self.pro_summary_df = pd.DataFrame()
+        #self.pro_summary_df = pd.DataFrame()
 
-        self.filtered_protein_df = pd.DataFrame()
-        self.filtered_pep_summary_df = pd.DataFrame()
+        #self.filtered_protein_df = pd.DataFrame()
+        #self.filtered_pep_summary_df = pd.DataFrame()
+
 
     def parse_file(self):
         """
@@ -71,7 +72,43 @@ class Mzid(object):
         else:
             return root
 
+
     def read_psm(self):
+        """
+        Read in PSM table
+        :return:
+        """
+        self.psm_df = self._read_psm()
+
+    def read_peptide(self):
+        """
+        Read in Peptide table
+        :return:
+        """
+        self.peptide_df = self._read_peptide()
+
+    def read_protein(self):
+        """
+        Read in Protein table
+        :return:
+        """
+        self.protein_df = self._read_protein()
+
+    def read_pe(self):
+        """
+        Read in peptide evidence table
+        """
+        self.pe_df = self._read_pe()
+
+    def read_dbs(self):
+        """
+        Read in dbs table
+        :return:
+        """
+        self.dbs_df = self._read_dbs()
+
+
+    def _read_psm(self):
         """
         Table #1 : All PSM Identified
 
@@ -167,7 +204,7 @@ class Mzid(object):
 
         return psm_df
 
-    def read_peptide(self):
+    def _read_peptide(self):
         """
         Table # 2: Peptide Sequences Identified
 
@@ -225,7 +262,7 @@ class Mzid(object):
 
         return peptide_df
 
-    def read_protein(self):
+    def _read_protein(self):
         """
          Retrieve ProteinAmbiguityGroup for all identified proteins from the mzIdentML file.
 
@@ -318,7 +355,7 @@ class Mzid(object):
         return protein_df
 
 
-    def read_pe(self):
+    def _read_pe(self):
         """
         Table #4. PeptideEvidence
         This is read to see whether sequence isDecoy, and to link each PAG's PeptideHypothesis to a Peptide and a DBSequence
@@ -361,7 +398,7 @@ class Mzid(object):
         return pe_df
 
 
-    def read_dbs(self):
+    def _read_dbs(self):
         """
         Table #5 DBSequences
         This is read to get the Uniprot accession of each identified peptide

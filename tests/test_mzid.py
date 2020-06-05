@@ -1,7 +1,7 @@
 import unittest
 from pymzid.read_mzid import Mzid
 
-class MzidTest(unittest.Testcase):
+class MzidTest(unittest.TestCase):
     """
     Test cases involving reading mzid files
     """
@@ -27,5 +27,7 @@ class MzidTest(unittest.Testcase):
 
 
     def test_that_percolator_opens(self):
+
+        mzid = Mzid(percolator_floc)
 
         pass
