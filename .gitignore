@@ -1,6 +1,13 @@
 # OS X
 .DS_Store
 
+# Pycharm
+.idea/
+
+# Project specific
+*.mzML
+*.mzML.gz
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
