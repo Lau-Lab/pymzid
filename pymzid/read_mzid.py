@@ -2,7 +2,7 @@ from time import time
 from xml.etree import ElementTree
 import pandas as pd
 import os.path
-import re
+import logging
 import sys
 from tqdm import tqdm
 
@@ -30,6 +30,8 @@ class Mzid(object):
 
 
         """
+        self.logger = logging.getLogger('mzid.mzid')
+
         self.path = os.path.join(path)
         self.root = self._parse_file()
 
@@ -40,8 +42,10 @@ class Mzid(object):
         self.dbs_df = pd.DataFrame() #self.read_dbs()
 
         self.pep_summary_df = pd.DataFrame()
-        #self.pro_summary_df = pd.DataFrame()
 
+
+
+        #self.pro_summary_df = pd.DataFrame()
         #self.filtered_protein_df = pd.DataFrame()
         #self.filtered_pep_summary_df = pd.DataFrame()
 
@@ -54,7 +58,7 @@ class Mzid(object):
         :return: True
         """
 
-        print('Reading mzID file {0} as document object model...'.format(self.path))
+        self.logger.info('Reading mzID file {0} as document object model...'.format(self.path))
         t1 = time()
         tree = ElementTree.parse(self.path)
         root = tree.getroot()
@@ -63,7 +67,7 @@ class Mzid(object):
         # xmldoc = minidom.parse("external_mzid_test/BSA1_msgfplus_v2016_09_16.mzid").childNodes[0]
 
         t2 = time()
-        print('Done. Processing time: ' + str(round(t2 - t1, 2)) + ' seconds.')
+        self.logger.info('Done. Processing time: {0} seconds.'.format(round(t2 - t1, 2)))
 
         # Check if this is mzML 1.1 or above
         if root.attrib['version'] < '1.1.0':
@@ -71,6 +75,19 @@ class Mzid(object):
 
         else:
             return root
+
+
+    def read_all_tables(self):
+        """
+        Wrapper to read all tables.
+        :return:
+        """
+        self.read_psm()
+        self.read_peptide()
+        self.read_pe()
+        self.read_protein()
+        self.read_dbs()
+        return True
 
 
     def read_psm(self):
@@ -305,7 +322,7 @@ class Mzid(object):
             [element for element in analysis_data if element.tag.endswith('ProteinDetectionList')][0]
 
         except IndexError:
-            print('No Protein Detection List found.')
+            self.logger.warning('No Protein Detection List found.')
             return None
 
 

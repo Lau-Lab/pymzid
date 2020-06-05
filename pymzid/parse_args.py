@@ -1,5 +1,6 @@
 import sys
 import argparse
+from . import __version__
 
 def get_args():
     """
@@ -15,8 +16,11 @@ def get_args():
                         help='only outputs rows associated with protein accession')
 
     # TODO: this needs to be a directory and adds in time like in riana
-    parser.add_argument('-o', '--out', help='name of the output files [default: mzid.txt]',
+    parser.add_argument('-o', '--out', help='prefix of the output directory [default: mzid]',
                         default='mzid')
+
+    parser.add_argument('-v', '--version', action='version',
+                        version='%(prog)s {version}'.format(version=__version__))
 
     args = parser.parse_args()
 
