@@ -15,7 +15,6 @@ def get_args():
     parser.add_argument('-i', '--id', action='store_true',
                         help='only outputs rows associated with protein accession')
 
-    # TODO: this needs to be a directory and adds in time like in riana
     parser.add_argument('-o', '--out', help='prefix of the output directory [default: mzid]',
                         default='mzid')
 
