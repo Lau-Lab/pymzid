@@ -9,7 +9,7 @@ def get_args():
     :return: args dict
     """
 
-    parser = argparse.ArgumentParser(description='PyMzid v.0.3.0 reads protein identification mzID files')
+    parser = argparse.ArgumentParser(description='PyMzid {0} reads protein identification mzID files'.format(__version__))
 
     parser.add_argument('mzid', help='path to mzid file')
     parser.add_argument('-i', '--id', action='store_true',

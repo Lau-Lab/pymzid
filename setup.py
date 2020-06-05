@@ -10,7 +10,7 @@ with open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='pymzid',
-    version='0.3.1',
+    version='0.3.2',
     description='pymzid reads in mzidentml files from proteomics search engine',
 
     long_description=long_description,
@@ -43,7 +43,7 @@ setup(
         'Programming Language :: Python :: 3 :: Only',
     ],
 
-    keywords='scientific turnover kinetics proteomics mass-spectrometry',  # Optional
+    keywords='scientific proteomics mass-spectrometry mzid mzidentml',  # Optional
 
     packages=find_packages(),
 
